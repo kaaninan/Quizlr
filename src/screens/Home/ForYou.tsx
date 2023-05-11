@@ -1,7 +1,6 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-// useTheme
 import {useTheme} from '@react-navigation/native';
 
 type Props = {};
@@ -10,7 +9,7 @@ type Props = {};
 const Following = (props: Props) => {
   const {colors} = useTheme();
   return (
-    <View style={[styles.container, {marginTop: useSafeAreaInsets().top + 50}]}>
+    <View style={styles.container}>
       <Text style={{color: colors.primary}}>For YOU</Text>
     </View>
   );
@@ -22,7 +21,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'transparent',
-    // borderWidth: 2,
-    // borderColor: 'red',
   },
 });

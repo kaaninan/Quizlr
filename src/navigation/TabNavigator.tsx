@@ -63,6 +63,8 @@ export default function () {
         tabBarInactiveTintColor: 'gray',
         tabBarLabelStyle: {
           fontSize: 10,
+          fontFamily: 'SF Pro Rounded',
+          fontWeight: '500',
           paddingBottom: 8,
         },
         tabBarStyle: {

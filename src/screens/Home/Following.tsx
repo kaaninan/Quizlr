@@ -1,19 +1,73 @@
-import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-// useTheme
-import {useTheme} from '@react-navigation/native';
+import {ActivityIndicator, StyleSheet, View} from 'react-native';
+import React, {useEffect} from 'react';
+import Flashcard from './components/Flashcard';
 
-type Props = {};
+// Type question
+type Question = {
+  id: number;
+  description: string;
+  flashcard_back: string;
+  flashcard_front: string;
+  playlist: string;
+  type: string;
+  user: {
+    avatar: string;
+    name: string;
+  };
+};
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const Following = (props: Props) => {
-  const {colors} = useTheme();
-  return (
-    <View style={[styles.container, {marginTop: useSafeAreaInsets().top + 50}]}>
-      <Text style={{color: colors.primary}}>KAAN INAN</Text>
-    </View>
-  );
+const Following = () => {
+  const [question, setQuestion] = React.useState<Question>({
+    id: 1,
+    description: '',
+    flashcard_back: '',
+    flashcard_front: '',
+    playlist: '',
+    type: '',
+    user: {
+      avatar: '',
+      name: '',
+    },
+  });
+  const [loading, setLoading] = React.useState(true);
+
+  useEffect(() => {
+    loadQuestion();
+  }, []);
+
+  const loadQuestion = async () => {
+    const response = await fetch(
+      'https://cross-platform.rp.devfactory.com/following',
+    );
+    const json = await response.json();
+    console.log(json);
+    setQuestion(json);
+    setLoading(false);
+  };
+
+  const getQuestion = () => {
+    if (loading) {
+      return (
+        <View style={styles.centerContainer}>
+          <ActivityIndicator />
+        </View>
+      );
+    } else {
+      return (
+        <Flashcard
+          id={question.id}
+          description={question.description}
+          flashcard_back={question.flashcard_back}
+          flashcard_front={question.flashcard_front}
+          playlist={question.playlist}
+          type={question.type}
+          user={question.user}
+        />
+      );
+    }
+  };
+
+  return <View style={styles.container}>{getQuestion()}</View>;
 };
 
 export default Following;
@@ -21,5 +75,12 @@ export default Following;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    // justifyContent: 'center',
+    // alignItems: 'center',
+  },
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

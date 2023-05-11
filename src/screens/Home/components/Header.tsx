@@ -1,18 +1,13 @@
 import {
   Dimensions,
   StyleSheet,
+  Animated,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import React from 'react';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-} from 'react-native-reanimated';
-
 import ClockIcon from '../../../assets/vector/clock.svg';
 import SearchIcon from '../../../assets/vector/search.svg';
 
@@ -20,19 +15,32 @@ type Props = {
   state: any;
   descriptors: any;
   navigation: any;
+  position: any;
 };
 
 const Header = (props: Props) => {
   // Calculate Position for Tab Bar Line
-  const tabOnePos = Dimensions.get('window').width / 2 - 15 - 45;
-  const tabTwoPos = Dimensions.get('window').width / 2 - 15 + 45;
-  const offset = useSharedValue(tabOnePos);
-  const animatedStyles = useAnimatedStyle(() => {
-    return {
-      left: withTiming(offset.value),
-    };
-  });
-  let currentRoute = props.state.routes[props.state.index].name;
+  const tabOnePos = (Dimensions.get('window').width - 30) / 2 - 45;
+  const tabTwoPos = (Dimensions.get('window').width - 30) / 2 + 45;
+
+  const renderLine = () => {
+    const inputRange = props.state.routes.map((_, i) => i);
+    const left = props.position.interpolate({
+      inputRange,
+      outputRange: [tabOnePos, tabTwoPos],
+    });
+    return (
+      <Animated.View
+        style={[
+          styles.line,
+          // animatedStyles,
+          {transform: [{translateX: left}]},
+          // left,
+          {top: useSafeAreaInsets().top + 40},
+        ]}
+      />
+    );
+  };
 
   return (
     <View
@@ -47,52 +55,59 @@ const Header = (props: Props) => {
         <ClockIcon />
         <Text style={styles.timeText}>10m</Text>
       </View>
+
       <View style={styles.menu}>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={() => {
-            offset.value = tabOnePos;
-            props.navigation.jumpTo('Following');
-          }}>
-          <Text
-            style={[
-              styles.text,
-              currentRoute === 'Following' ? styles.bold : null,
-            ]}>
-            Following
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={() => {
-            // 1 and 10
-            offset.value = tabTwoPos;
-            props.navigation.jumpTo('ForYou');
-          }}>
-          <Text
-            style={[
-              styles.text,
-              currentRoute === 'ForYou' ? styles.bold : null,
-            ]}>
-            For You
-          </Text>
-        </TouchableOpacity>
+        {props.state.routes.map(
+          (
+            route: {key: string | number; name: any},
+            index: any,
+          ): React.JSX.Element => {
+            const {options} = props.descriptors[route.key];
+            const label =
+              options.tabBarLabel !== undefined
+                ? options.tabBarLabel
+                : options.title !== undefined
+                ? options.title
+                : route.name;
+
+            const isFocused = props.state.index === index;
+
+            const onPress = () => {
+              const event = props.navigation.emit({
+                type: 'tabPress',
+                target: route.key,
+                canPreventDefault: true,
+              });
+
+              if (!isFocused && !event.defaultPrevented) {
+                // The `merge: true` option makes sure that the params inside the tab screen are preserved
+                props.navigation.navigate({name: route.name, merge: true});
+              }
+            };
+
+            return (
+              <TouchableOpacity
+                key={index}
+                activeOpacity={0.6}
+                onPress={onPress}>
+                <Text style={[styles.text, isFocused ? styles.bold : null]}>
+                  {label}
+                </Text>
+              </TouchableOpacity>
+            );
+          },
+        )}
       </View>
-      <Animated.View
-        style={[
-          styles.line,
-          animatedStyles,
-          {top: useSafeAreaInsets().top + 40},
-        ]}
-      />
+
+      {renderLine()}
+
       <View style={styles.searchContainer}>
         <TouchableOpacity
-          activeOpacity={0.8}
+          activeOpacity={0.6}
           style={styles.searchButtonContainer}>
           <SearchIcon />
         </TouchableOpacity>
       </View>
-      <View />
     </View>
   );
 };
@@ -101,10 +116,10 @@ export default Header;
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
+    // position: 'absolute',
+    // top: 0,
+    // left: 0,
+    // right: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
@@ -116,6 +131,7 @@ const styles = StyleSheet.create({
   },
   timeText: {
     fontSize: 16,
+    fontFamily: 'SF Pro Rounded',
     color: 'rgba(255, 255, 255, .6)',
     marginLeft: 5,
     paddingTop: 1,
@@ -131,6 +147,7 @@ const styles = StyleSheet.create({
     color: 'white',
     width: 90,
     textAlign: 'center',
+    fontFamily: 'SF Pro Rounded',
   },
   bold: {
     fontWeight: '700',
@@ -140,6 +157,7 @@ const styles = StyleSheet.create({
     height: 4,
     backgroundColor: 'white',
     position: 'absolute',
+    transform: [{translateX: 100}],
   },
   searchContainer: {
     flex: 1,

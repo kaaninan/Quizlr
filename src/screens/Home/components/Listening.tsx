@@ -32,6 +32,8 @@ const styles = StyleSheet.create({
   text: {
     color: 'white',
     fontSize: 13,
+    fontFamily: 'SF Pro Rounded',
+    fontWeight: '600',
     flex: 1,
     marginLeft: 4,
   },
