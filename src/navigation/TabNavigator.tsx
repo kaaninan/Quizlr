@@ -1,10 +1,9 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import * as React from 'react';
 import {Platform} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
-import Home from '../screens/Home';
+import Home from '../screens/Home/Navigation';
 import Activity from '../screens/Activity';
 import Bookmarks from '../screens/Bookmarks';
 import Discover from '../screens/Discover';
@@ -18,7 +17,7 @@ import ProfileIcon from '../assets/vector/menu/profile.svg';
 
 const Tab = createBottomTabNavigator();
 
-export default function App() {
+export default function () {
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
@@ -64,7 +63,7 @@ export default function App() {
         tabBarInactiveTintColor: 'gray',
         tabBarLabelStyle: {
           fontSize: 10,
-          paddingBottom: 6,
+          paddingBottom: 8,
         },
         tabBarStyle: {
           height:
@@ -72,9 +71,16 @@ export default function App() {
               ? useSafeAreaInsets().bottom + 60
               : useSafeAreaInsets().bottom + 55,
           backgroundColor: '#011E29',
+          borderTopColor: 'transparent',
         },
       })}>
-      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen
+        name="Home"
+        component={Home}
+        options={({}) => ({
+          headerShown: false,
+        })}
+      />
       <Tab.Screen name="Discover" component={Discover} />
       <Tab.Screen name="Activity" component={Activity} />
       <Tab.Screen name="Bookmarks" component={Bookmarks} />

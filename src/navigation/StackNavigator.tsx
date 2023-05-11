@@ -7,7 +7,11 @@ const MyTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    primary: 'rgb(255, 45, 85)',
+    primary: 'rgb(255, 255, 255)',
+    background: 'transparent',
+  },
+  metric: {
+    padding: 16, // TODO
   },
 };
 
