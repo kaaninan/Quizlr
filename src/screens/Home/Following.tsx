@@ -36,11 +36,13 @@ const Following = () => {
   }, []);
 
   const loadQuestion = async () => {
+    // setLoading(true);
     const response = await fetch(
       'https://cross-platform.rp.devfactory.com/following',
     );
     const json = await response.json();
     console.log(json);
+    console.log(json.flashcard_back.length);
     setQuestion(json);
     setLoading(false);
   };
@@ -62,6 +64,7 @@ const Following = () => {
           playlist={question.playlist}
           type={question.type}
           user={question.user}
+          loadQuestion={loadQuestion}
         />
       );
     }

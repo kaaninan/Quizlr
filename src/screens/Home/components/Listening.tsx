@@ -1,5 +1,5 @@
-import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
+import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 
 import ArrowRightIcon from '../../../assets/vector/arrow-right.svg';
 import VideoIcon from '../../../assets/vector/video.svg';
@@ -12,7 +12,7 @@ const Listening = (props: Props) => {
   return (
     <TouchableOpacity style={styles.container} activeOpacity={0.8}>
       <VideoIcon />
-      <Text style={styles.text}>{props.text}</Text>
+      <Text style={styles.text}>Playlist - {props.text}</Text>
       <ArrowRightIcon />
     </TouchableOpacity>
   );

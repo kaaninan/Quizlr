@@ -17,7 +17,7 @@ import ProfileIcon from '../assets/vector/menu/profile.svg';
 
 const Tab = createBottomTabNavigator();
 
-export default function () {
+export default () => {
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
@@ -89,4 +89,4 @@ export default function () {
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
-}
+};

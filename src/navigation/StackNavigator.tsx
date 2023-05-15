@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import RNBootSplash from 'react-native-bootsplash';
 import TabNavigator from './TabNavigator';
 
 const MyTheme = {
@@ -17,20 +18,28 @@ const MyTheme = {
 
 const Stack = createNativeStackNavigator();
 
-function Navigator() {
+export const AppStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name={'TabBar'}
+      component={TabNavigator}
+      options={({}) => ({
+        headerShown: false,
+      })}
+    />
+  </Stack.Navigator>
+);
+
+function Container() {
   return (
-    <NavigationContainer theme={MyTheme}>
-      <Stack.Navigator>
-        <Stack.Screen
-          name={'TabBar'}
-          component={TabNavigator}
-          options={({}) => ({
-            headerShown: false,
-          })}
-        />
-      </Stack.Navigator>
+    <NavigationContainer
+      theme={MyTheme}
+      onReady={() => {
+        RNBootSplash.hide({fade: true});
+      }}>
+      <AppStack />
     </NavigationContainer>
   );
 }
 
-export default Navigator;
+export default Container;
